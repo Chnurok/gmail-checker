@@ -1,22 +1,31 @@
 # Gmail Checker
 
-A small utility that watches a Gmail inbox, summarizes unread messages with Claude, and delivers the result to Telegram.
+A small utility that watches a Gmail inbox, summarizes unread messages with Claude, and sends the digest to Telegram.
+
+Built for people who want a lightweight inbox monitor without a full mail client or a heavyweight automation stack.
+
+## What it does
+
+1. logs into Gmail over IMAP
+2. finds unread emails
+3. extracts sender, subject, and a short text snippet
+4. asks Claude for a compact Russian summary
+5. delivers the result to Telegram
 
 ## Features
 
-- 📧 Connects to Gmail over IMAP
-- 📨 Reads unread messages from the inbox
-- ✍️ Builds a compact Russian summary with Claude
-- 🤖 Sends the digest to Telegram
-- ⚙️ Simple environment-variable configuration
-- 🧩 Easy to run manually, from cron, or from another automation layer
+- Gmail over IMAP
+- compact digest format for unread mail
+- Russian summaries out of the box
+- simple environment-variable setup
+- works well from cron, systemd, or another automation runner
 
-## Files
+## Project files
 
-- `run.py` — main runnable version
-- `checker.py` — alternative entry point using the same env-based configuration style
-- `.env.example` — example configuration
-- `state.json` — local state file for tracking checks
+- `run.py` — main runnable script
+- `checker.py` — alternate entry point
+- `.env.example` — config example
+- `state.json` — local state file
 
 ## Requirements
 
@@ -26,23 +35,27 @@ A small utility that watches a Gmail inbox, summarizes unread messages with Clau
 - Anthropic API key
 - Telegram bot token
 
-## Installation
+## Install
 
 ```bash
+git clone https://github.com/Chnurok/gmail-checker.git
+cd gmail-checker
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
 ## Configuration
 
-Copy `.env.example` and fill in the values via your shell, systemd, cron wrapper, or secret manager.
+Copy `.env.example` or export variables directly:
 
 ```bash
-GMAIL_USER=your@gmail.com
-GMAIL_APP_PASSWORD=your_gmail_app_password
-TELEGRAM_BOT_TOKEN=your_bot_token
-TELEGRAM_CHAT_ID=your_chat_id
-ANTHROPIC_API_KEY=your_anthropic_key
-STATE_FILE=./state.json
+export GMAIL_USER=your@gmail.com
+export GMAIL_APP_PASSWORD=your_gmail_app_password
+export TELEGRAM_BOT_TOKEN=your_bot_token
+export TELEGRAM_CHAT_ID=your_chat_id
+export ANTHROPIC_API_KEY=your_anthropic_key
+export STATE_FILE=./state.json
 ```
 
 ## Gmail App Password
@@ -50,7 +63,7 @@ STATE_FILE=./state.json
 1. Enable 2FA in your Google account
 2. Open **Security → App passwords**
 3. Create a password for Mail
-4. Use that value in `GMAIL_APP_PASSWORD`
+4. Use that value as `GMAIL_APP_PASSWORD`
 
 ## Run
 
@@ -58,24 +71,30 @@ STATE_FILE=./state.json
 python3 run.py
 ```
 
-## What it does
+## Example output
 
-1. Logs into Gmail over IMAP
-2. Finds unread messages
-3. Extracts sender, subject, and text snippets
-4. Asks Claude for a short summary in Russian
-5. Sends the summary to Telegram
+```text
+📧 Почта your@gmail.com
+4 новых письма
 
-## Example usage patterns
+- срочное: письмо от клиента по срокам
+- важно: подтверждение оплаты
+- не срочно: рассылка сервиса
+- спам: рекламное предложение
+```
 
-- daily inbox digest
-- lightweight monitoring for a secondary mailbox
-- Telegram-first personal assistant workflows
-- scheduled checks via cron or OpenClaw-triggered runs
+## Good fit for
 
-## Security note
+- personal assistant workflows
+- secondary mailbox monitoring
+- daily or hourly inbox digests
+- Telegram-first notification setups
 
-Do **not** commit real credentials into the repository. Use environment variables or a secret file outside version control.
+## Security notes
+
+- Do not commit real credentials.
+- Use environment variables or a secret file outside the repo.
+- Gmail App Passwords should be treated like full-access mailbox credentials.
 
 ## License
 
