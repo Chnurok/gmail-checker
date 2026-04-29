@@ -1,53 +1,82 @@
 # Gmail Checker
 
-Автоматическая проверка Gmail и отправка дейли-сводок через OpenClaw.
+A small utility that watches a Gmail inbox, summarizes unread messages with Claude, and delivers the result to Telegram.
 
-## Возможности
+## Features
 
-- 📧 IMAP подключение к Gmail
-- 🔔 Проверка новых писем
-- 📊 Дейли-сводки (последние 24 часа)
-- 🤖 Интеграция с OpenClaw для отправки в Telegram
-- 💾 Трекинг последнего прочитанного письма
+- 📧 Connects to Gmail over IMAP
+- 📨 Reads unread messages from the inbox
+- ✍️ Builds a compact Russian summary with Claude
+- 🤖 Sends the digest to Telegram
+- ⚙️ Simple environment-variable configuration
+- 🧩 Easy to run manually, from cron, or from another automation layer
 
-## Установка
+## Files
+
+- `run.py` — main runnable version
+- `checker.py` — alternative entry point using the same env-based configuration style
+- `.env.example` — example configuration
+- `state.json` — local state file for tracking checks
+
+## Requirements
+
+- Python 3.10+
+- Gmail account with 2FA enabled
+- Gmail App Password
+- Anthropic API key
+- Telegram bot token
+
+## Installation
 
 ```bash
-pip install anthropic requests
+pip install -r requirements.txt
 ```
 
-## Конфигурация
+## Configuration
 
-Переменные окружения:
+Copy `.env.example` and fill in the values via your shell, systemd, cron wrapper, or secret manager.
+
 ```bash
 GMAIL_USER=your@gmail.com
-GMAIL_APP_PASSWORD=your_app_password
-ANTHROPIC_API_KEY=your_key
-GATEWAY_TOKEN=your_gateway_token
+GMAIL_APP_PASSWORD=your_gmail_app_password
+TELEGRAM_BOT_TOKEN=your_bot_token
+TELEGRAM_CHAT_ID=your_chat_id
+ANTHROPIC_API_KEY=your_anthropic_key
+STATE_FILE=./state.json
 ```
 
 ## Gmail App Password
 
-1. Включите 2FA в Google Account
-2. Зайдите в Security → App passwords
-3. Создайте новый app password для "Mail"
-4. Используйте этот пароль в `GMAIL_APP_PASSWORD`
+1. Enable 2FA in your Google account
+2. Open **Security → App passwords**
+3. Create a password for Mail
+4. Use that value in `GMAIL_APP_PASSWORD`
 
-## Файлы
-
-- `checker.py` — основной модуль проверки IMAP
-- `run.py` — обёртка для запуска через OpenClaw
-- `state.json` — хранит ID последнего прочитанного письма
-
-## Запуск
+## Run
 
 ```bash
-# Ручной запуск
 python3 run.py
-
-# Через OpenClaw cron (каждый день в 06:00 MSK)
 ```
 
-## Лицензия
+## What it does
+
+1. Logs into Gmail over IMAP
+2. Finds unread messages
+3. Extracts sender, subject, and text snippets
+4. Asks Claude for a short summary in Russian
+5. Sends the summary to Telegram
+
+## Example usage patterns
+
+- daily inbox digest
+- lightweight monitoring for a secondary mailbox
+- Telegram-first personal assistant workflows
+- scheduled checks via cron or OpenClaw-triggered runs
+
+## Security note
+
+Do **not** commit real credentials into the repository. Use environment variables or a secret file outside version control.
+
+## License
 
 MIT
