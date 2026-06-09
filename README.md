@@ -2,20 +2,27 @@
 
 ![Preview](assets/preview.svg)
 
-A small utility that watches a Gmail inbox, summarizes unread messages with Claude, and delivers the result to Telegram.
+A lightweight utility that watches a Gmail inbox, summarizes unread messages with AI, and delivers the result to Telegram.
 
-## Why use it
+## Why this exists
 
-Useful when you want a lightweight inbox monitor without living inside a full mail client or building a heavyweight automation stack.
+Sometimes you want a compact inbox digest without living inside a full mail client or wiring up a heavyweight automation stack. This repo focuses on one simple job: unread Gmail → short summary → Telegram.
 
-## Highlights
+## What you get
 
 - 📧 connects to Gmail over IMAP
-- 📨 reads unread messages from the inbox
+- 📨 reads unread inbox messages
 - ✍️ builds a compact Russian summary with Claude
 - 🤖 sends the digest to Telegram
-- ⚙️ easy environment-variable setup
-- 🧩 runs well manually, via cron, systemd, or another automation layer
+- ⚙️ simple environment-variable setup
+- 🧩 works manually, via cron, systemd, or OpenClaw-triggered runs
+
+## Good fit for
+
+- daily inbox digests
+- monitoring a secondary mailbox
+- Telegram-first personal assistant workflows
+- scheduled checks via cron or OpenClaw
 
 ## Quick start
 
@@ -31,6 +38,8 @@ python3 run.py
 
 ## Configuration
 
+`.env.example`:
+
 ```bash
 GMAIL_USER=your@gmail.com
 GMAIL_APP_PASSWORD=your_gmail_app_password
@@ -45,8 +54,8 @@ STATE_FILE=./state.json
 1. logs into Gmail over IMAP
 2. finds unread messages
 3. extracts sender, subject, and text snippets
-4. asks Claude for a short summary in Russian
-5. sends the summary to Telegram
+4. asks Claude for a short Russian summary
+5. sends the digest to Telegram
 
 ## Example output
 
@@ -59,13 +68,6 @@ STATE_FILE=./state.json
 - не срочно: рассылка сервиса
 - спам: рекламное предложение
 ```
-
-## Good fit for
-
-- daily inbox digests
-- monitoring a secondary mailbox
-- Telegram-first personal assistant workflows
-- scheduled checks via cron or OpenClaw-triggered runs
 
 ## Security notes
 
